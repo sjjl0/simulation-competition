@@ -1,12 +1,19 @@
 import logo from './logo.svg';
 import './App.css';
-import MainPage from "./component/main/main";
+import {BrowserRouter,Routes, Route} from 'react-router-dom';
+
+import MenuAppBar from "./component/TopBar";
+import Index from "./component/Index";
 
 function App() {
   return (
     <div>
-      <div style={{height:50}}></div>
-      <MainPage/>
+      <MenuAppBar/>
+        <BrowserRouter>
+            <Routes>
+                <Route exact path='/' element={<Index/>}/>
+            </Routes>
+        </BrowserRouter>
     </div>
   );
 }
