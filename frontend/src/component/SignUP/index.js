@@ -17,15 +17,22 @@ import MuiAlert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CopyRight from "../CopyRight";
 import {useState} from "react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export default function SignUp() {
+export default function SignUp(props) {
+    const {openError,setOpenError,errorMsg,setErrorMsg} = props
+    const {openSuccess,setOpenSuccess,successMsg,setSuccessMsg} = props
+    const {loginStatus,setLoginStatus,userName,setUserName} = props
     const [known,setKnown] = useState(false)
     const [open, setOpen] = React.useState(false)
+    const navigate = useNavigate()
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return
@@ -39,10 +46,29 @@ export default function SignUp() {
         if (!known){
             setOpen(true)
         }else{
-            // eslint-disable-next-line no-console
-            console.log({
-                email: data.get('email'),
-                password: data.get('password'),
+            setOpen(false)
+            axios({
+                method:'post',
+                url:'http://localhost:8000/signup',
+                data:data,
+            }).then((m)=>{
+                console.log(m)
+                let msg = m.data
+                if(msg[0]=='T'){
+                    setSuccessMsg("注册成功")
+                    navigate('/')
+                    setOpenSuccess(true)
+                    setLoginStatus(true)
+                    setUserName(data.get('uName'))
+                    localStorage.setItem("loginStatus","ture")
+                    localStorage.setItem("userName",data.get('uName'))
+                }else{
+                    setErrorMsg(msg.slice(1,msg.length))
+                    setOpenError(true)
+                }
+            }).catch((e)=>{
+                setErrorMsg("服务器请求异常")
+                setOpenError(true)
             })
         }
     }
@@ -138,7 +164,7 @@ export default function SignUp() {
                 <CopyRight sx={{ mt: 5 }} />
             </Container>
             <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
                     请勾选同意以继续注册
                 </Alert>
             </Snackbar>

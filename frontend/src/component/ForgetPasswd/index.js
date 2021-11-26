@@ -17,8 +17,10 @@ import {useState} from "react";
 
 const theme = createTheme();
 
-export default function ForgetPasswd() {
-
+export default function ForgetPasswd(props) {
+    const {openError,setOpenError,errorMsg,setErrorMsg} = props
+    const {openSuccess,setOpenSuccess,successMsg,setSuccessMsg} = props
+    const {loginStatus,setLoginStatus,userName,setUserName} = props
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -45,7 +47,7 @@ export default function ForgetPasswd() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign up
+                        找回密码
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>

@@ -17,7 +17,10 @@ import {useState} from "react";
 
 const theme = createTheme();
 
-export default function SignInSide() {
+export default function SignInSide(props) {
+    const {openError,setOpenError,errorMsg,setErrorMsg} = props
+    const {openSuccess,setOpenSuccess,successMsg,setSuccessMsg} = props
+    const {loginStatus,setLoginStatus,userName,setUserName} = props
     const [remember,setRemember] = useState(false)
     const handleSubmit = (event) => {
         event.preventDefault();

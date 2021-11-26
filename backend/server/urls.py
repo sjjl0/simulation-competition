@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from . import LoginRegister
+from . import Login
+from . import SignUp
+from . import ForgetPassed
 
 urlpatterns = [
-    path('user/login', LoginRegister.login),
-    path('user/register', LoginRegister.register),
-    path('user/change', LoginRegister.change),
+    path('login', Login.login),
+    path('signup', SignUp.signup),
+    path('forget', ForgetPassed.forget),
 ]
