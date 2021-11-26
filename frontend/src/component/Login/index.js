@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CopyRight from "../CopyRight";
 import {useState} from "react";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 const theme = createTheme();
 
@@ -22,15 +24,37 @@ export default function SignInSide(props) {
     const {openSuccess,setOpenSuccess,successMsg,setSuccessMsg} = props
     const {loginStatus,setLoginStatus,userName,setUserName} = props
     const [remember,setRemember] = useState(false)
+    const navigate = useNavigate()
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('name'),
-            password: data.get('password'),
-            remember: remember,
-        });
+        /*
+        * TODO: 由于不可控因素 路由跳转后的页面是一个基于storage的存储 remember me 已经失效
+        * */
+        axios({
+            method:'post',
+            url:'http://localhost:8000/login',
+            data:data,
+        }).then((m)=>{
+            console.log(m)
+            let msg = m.data
+            if(msg[0]=='T'){
+                setSuccessMsg("登录成功")
+                navigate('/')
+                setOpenSuccess(true)
+                setLoginStatus(true)
+                setUserName(data.get('name'))
+                localStorage.setItem("loginStatus","ture")
+                localStorage.setItem("userName",data.get('name'))
+            }else{
+                setErrorMsg(msg.slice(1,msg.length))
+                setOpenError(true)
+            }
+        }).catch((e)=>{
+            setErrorMsg("服务器请求异常")
+            setOpenError(true)
+        })
     };
 
     return (

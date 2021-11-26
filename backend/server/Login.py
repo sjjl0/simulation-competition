@@ -4,13 +4,15 @@ from django.http import HttpResponse
 
 
 def login(request):
-    user_name = request.POST.get('userName')
-    passwd = request.POST.get('passwd')
-    if len(user_name)==0:
+    userName = request.POST.get('name')
+    passwd = request.POST.get('password')
+    if len(userName)==0:
         return HttpResponse("F"+"用户名不能为空")
     if len(passwd)==0:
         return HttpResponse("F"+"密码不能为空")
-    passwd_sha = hashlib.sha256(passwd.encode('utf-8')).hexdigest()
+
+    # TODO：为了节省时间，密码密文加密已删除，直接返回明文密码，节省时间做重置密码
+    # passwd_sha = hashlib.sha256(passwd.encode('utf-8')).hexdigest()
 
     conn = pymysql.connect(
         host='124.70.104.165',
@@ -21,8 +23,8 @@ def login(request):
     )
     cursor = conn.cursor()
 
-    sql = 'select passwd from system_users where user_name=%s'
-    cursor.execute(sql,user_name)
+    sql = 'select passwd from userData where userName=%s'
+    cursor.execute(sql,userName)
     data = cursor.fetchall()
     if not data:
         conn.commit()
@@ -30,7 +32,7 @@ def login(request):
         conn.close()
         return HttpResponse("F" + "没有这个用户")
     else:
-        if passwd_sha != data[0][0]:
+        if passwd != data[0][0]:
             conn.commit()
             cursor.close()
             conn.close()

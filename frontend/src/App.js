@@ -128,19 +128,49 @@ function App() {
     }else{
         return (
             <div>
-                <MenuAppBar
-                    loginStatus={loginStatus}
-                    setLoginStatus={setLoginStatus}
-                />
                 <BrowserRouter>
+                    <MenuAppBar
+                        openError={openError}
+                        setOpenError={setOpenError}
+                        errorMsg={errorMsg}
+                        setErrorMsg={setErrorMsg}
+                        openSuccess={openSuccess}
+                        setOpenSuccess={setOpenSuccess}
+                        successMsg={successMsg}
+                        setSuccessMsg={setSuccessMsg}
+                        loginStatus={loginStatus}
+                        setLoginStatus={setLoginStatus}
+                        userName={userName}
+                        setUserName={setUserName}
+                    />
                     <Routes>
                         <Route exact path='/' element={<Index
+                            openError={openError}
+                            setOpenError={setOpenError}
+                            errorMsg={errorMsg}
+                            setErrorMsg={setErrorMsg}
+                            openSuccess={openSuccess}
+                            setOpenSuccess={setOpenSuccess}
+                            successMsg={successMsg}
+                            setSuccessMsg={setSuccessMsg}
                             loginStatus={loginStatus}
                             setLoginStatus={setLoginStatus}
+                            userName={userName}
+                            setUserName={setUserName}
                         />}/>
                         <Route path='/' element={<Index
+                            openError={openError}
+                            setOpenError={setOpenError}
+                            errorMsg={errorMsg}
+                            setErrorMsg={setErrorMsg}
+                            openSuccess={openSuccess}
+                            setOpenSuccess={setOpenSuccess}
+                            successMsg={successMsg}
+                            setSuccessMsg={setSuccessMsg}
                             loginStatus={loginStatus}
                             setLoginStatus={setLoginStatus}
+                            userName={userName}
+                            setUserName={setUserName}
                         />}/>
                     </Routes>
                 </BrowserRouter>

@@ -8,7 +8,6 @@ def signup(request):
     realName = request.POST.get('name')
     schoolName = request.POST.get('sName')
     passwd = request.POST.get('password')
-    print(request.POST)
 
     if len(userName) == 0:
         return HttpResponse("F"+"用户名不能为空")
@@ -19,7 +18,8 @@ def signup(request):
     if len(passwd) == 0:
         return HttpResponse("F"+"密码不能为空")
 
-    passwd_sha = hashlib.sha256(passwd.encode('utf-8')).hexdigest()
+    # TODO：为了节省时间，密码密文加密已删除，直接返回明文密码，节省时间做重置密码
+    # passwd_sha = hashlib.sha256(passwd.encode('utf-8')).hexdigest()
 
     conn = pymysql.connect(
         host='124.70.104.165',
@@ -35,7 +35,7 @@ def signup(request):
     cursor.execute(sql, userName)
     if not cursor.fetchall():
         sql = 'INSERT INTO userData(userName,realName,schoolName,passwd) VALUES (%s,%s,%s,%s)'
-        cursor.execute(sql, (userName,realName,schoolName,passwd_sha))
+        cursor.execute(sql, (userName,realName,schoolName,passwd))
         conn.commit()
         cursor.close()
         conn.close()

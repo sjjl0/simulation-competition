@@ -11,25 +11,58 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CopyRight from "../CopyRight";
 import {useState} from "react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import MuiAlert from "@mui/material/Alert";
 
 const theme = createTheme();
 
 export default function ForgetPasswd(props) {
+    const [open, setOpen] = React.useState(false)
+    const [passwd, setPasswd] = React.useState('')
     const {openError,setOpenError,errorMsg,setErrorMsg} = props
     const {openSuccess,setOpenSuccess,successMsg,setSuccessMsg} = props
     const {loginStatus,setLoginStatus,userName,setUserName} = props
+    const navigate = useNavigate()
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
+
+        axios({
+            method:'post',
+            url:'http://localhost:8000/forget',
+            data:data,
+        }).then((m)=>{
+            console.log(m)
+            let msg = m.data
+            if(msg[0]=='T'){
+                setPasswd(msg.slice(1,msg.length))
+                setOpen(true)
+            }else{
+                setErrorMsg(msg.slice(1,msg.length))
+                setOpenError(true)
+            }
+        }).catch((e)=>{
+            setErrorMsg("服务器请求异常")
+            setOpenError(true)
+        })
+    }
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+    const handleClose = () => {
+        setOpen(false);
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -88,7 +121,7 @@ export default function ForgetPasswd(props) {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            提交找回密码申请
+                            输入注册信息找回密码
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
@@ -101,6 +134,26 @@ export default function ForgetPasswd(props) {
                 </Box>
                 <CopyRight sx={{ mt: 5 }} />
             </Container>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"已找回密码"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        您的密码如下：{passwd}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} autoFocus>
+                        我已记住密码，点击关闭
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </ThemeProvider>
     );
 }

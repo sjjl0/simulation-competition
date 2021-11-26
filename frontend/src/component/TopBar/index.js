@@ -11,24 +11,38 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import {useEffect, useState} from "react";
+import { useNavigate } from 'react-router-dom';
 
 export default function MenuAppBar(props) {
+    const {openError,setOpenError,errorMsg,setErrorMsg} = props
+    const {openSuccess,setOpenSuccess,successMsg,setSuccessMsg} = props
+    const {loginStatus,setLoginStatus,userName,setUserName} = props
     const [anchorEl, setAnchorEl] = React.useState(null)
-    const {loginStatus, setLoginStatus} = props
+    const navigate = useNavigate()
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget)
-    };
+    }
 
     const handleClose = () => {
         setAnchorEl(null)
-    };
+    }
+    const handleAccount = () => {
+        setAnchorEl(null)
+    }
+    const Logout = () => {
+        setAnchorEl(null)
+        setSuccessMsg("退出登录")
+        navigate('/')
+        setOpenSuccess(true)
+        setLoginStatus(false)
+        setUserName('')
+        localStorage.setItem("loginStatus","false")
+        localStorage.setItem("userName",'')
+    }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <Button onClick={()=>{
-                setLoginStatus(!loginStatus)
-            }}></Button>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -41,7 +55,7 @@ export default function MenuAppBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Photos
+                        美学区即刻种植CBL
                     </Typography>
                     {loginStatus && (
                         <div>
@@ -70,8 +84,12 @@ export default function MenuAppBar(props) {
                                 open={Boolean(anchorEl)}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                                <MenuItem onClick={handleAccount}>
+                                    我的历史成绩（开发中不可用）
+                                </MenuItem>
+                                <MenuItem onClick={Logout}>
+                                    退出登录
+                                </MenuItem>
                             </Menu>
                         </div>
                     )}
